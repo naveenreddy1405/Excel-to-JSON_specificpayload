@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel to JSON Converter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center; /* Center all form items */
+        }
+
+        .file-upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .file-upload-container label {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        input[type="file"] {
+            padding: 14px 12px;
+            border: 1.5px solid #ced4da;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        input[type="file"]:hover {
+            border-color: #3498db;
+        }
+
+        button {
+            background-color: #3498db;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            box-shadow: 0 6px 12px rgba(41, 128, 185, 0.4);
+        }
+
+        pre {
+            background: #eee;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 30px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            user-select: text;
+        }
+
+        #copy-btn {
+            margin-top: 10px;
+            background-color: #4caf50;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #copy-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Excel File (.xlsx) to convert to JSON</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="file-upload-container">
+            <label for="id_file">Select Excel file (.xlsx):</label>
+            {{ form.file }}
+        </div>
+        <button type="submit">Upload and Convert</button>
+    </form>
+
+    {% if json_data %}
+        <h3>JSON Output</h3>
+        <pre id="json-output">{{ json_data }}</pre>
+        <button id="copy-btn" onclick="copyToClipboard()">Copy Output</button>
+    {% endif %}
+
+    <script>
+        function copyToClipboard() {
+            const outputElement = document.getElementById('json-output');
+            if (!outputElement) return;
+            const text = outputElement.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('JSON output copied to clipboard!');
+            }, () => {
+                alert('Failed to copy text. Please try manually.');
+            });
+        }
+    </script>
+</body>
+</html>
