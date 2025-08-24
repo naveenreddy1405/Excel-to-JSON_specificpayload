@@ -3,6 +3,9 @@ import json
 from datetime import datetime
 from django.shortcuts import render
 from .forms import UploadFileForm
+from django.http import FileResponse, Http404
+import os
+from django.conf import settings
 
 def process_excel(file):
     df = pd.read_excel(file, sheet_name="Sheet1")
@@ -68,6 +71,18 @@ def process_excel(file):
 
     return json.dumps(payloads, indent=4)
 
+from django.http import FileResponse, Http404
+import os
+from django.conf import settings
+
+def download_sample(request):
+    file_path = os.path.join(settings.BASE_DIR, "https://docs.google.com/spreadsheets/d/1jcDsu68BT4WpqIaVUr-Y3XsLZ7eXdYCwKDh2frsqFOI/edit?usp=sharingx")  # Adjust path if needed
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, "rb"), as_attachment=True, filename="sample.xlsx")
+    else:
+        raise Http404("File not found")
+
+
 
 def upload_file(request):
     json_data = None
@@ -79,3 +94,9 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, 'converter/upload.html', {'form': form, 'json_data': json_data})
+
+
+
+
+
+
