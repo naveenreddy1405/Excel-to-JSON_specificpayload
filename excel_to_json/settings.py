@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-k0e%&_ip5_3!0h0afp0#+v&9!p33457x6s)a*n7ut)s49lw1cv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # We'll add Render host later
+ALLOWED_HOSTS = ['batch-objectstatus.onrender.com', 'localhost', '127.0.0.1']
+
 
 
 
