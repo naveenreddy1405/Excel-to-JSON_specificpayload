@@ -110,6 +110,11 @@
 </head>
 <body>
     <h2>Excel File (.xlsx) to convert to JSON</h2>
+    {% if error_message %}
+      <div class="error" style="color: #d32f2f; background: #ffd6d6; border-radius: 7px; padding: 10px; margin-bottom: 18px;">
+        {{ error_message }}
+      </div>
+    {% endif %}
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}

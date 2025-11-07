@@ -123,11 +123,21 @@ def download_sample(request):
 
 def upload_file(request):
     json_data = None
+    error_message = None
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = request.FILES['file']
-            json_data = process_excel(uploaded_file)
+            try:
+                json_data = process_excel(uploaded_file)
+            except ValueError as ve:
+                error_message = str(ve)
+            except Exception as ex:
+                error_message = "An unexpected error occurred while processing your file."
     else:
         form = UploadFileForm()
-    return render(request, 'converter/upload.html', {'form': form, 'json_data': json_data})
+    return render(request, 'converter/upload.html', {
+        'form': form,
+        'json_data': json_data,
+        'error_message': error_message
+    })
