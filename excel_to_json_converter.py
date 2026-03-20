@@ -236,7 +236,32 @@ def process_excel(file_path):
                 LOGGER.debug(f"Row {i+1}: Skipped (no valid ID found)")
                 continue
 
-            payloads.append(body)
+            request_id = body["requestId"]
+
+            # Find columns with flexible normalization
+            method_columns = [col for col in df.columns if _normalize_key(col) == "method"]
+            path_columns = [col for col in df.columns if _normalize_key(col) == "path"]
+            value_columns = [col for col in df.columns if _normalize_key(col) == "value"]
+
+            # Extract values with defaults
+            method = _get_first_value(row, method_columns) or "POST"
+            path = _get_first_value(row, path_columns) or "/auth/v1/add_update_user/"
+            auth_token = _get_first_value(row, value_columns) or "Bearer test"
+
+            # Build the operation payload
+            payload = {
+                "body": body,
+                "requestId": request_id,
+                "method": method,
+                "path": path,
+                "headers": [
+                    {
+                        "name": "Authorization",
+                        "value": auth_token,
+                    }
+                ],
+            }
+            payloads.append(payload)
             LOGGER.debug(f"Row {i+1}: Converted successfully")
 
         except Exception as e:
@@ -245,7 +270,7 @@ def process_excel(file_path):
 
     # Build batch request
     batch_request = DEFAULT_BATCH_REQUEST.copy()
-    batch_request["requests"] = payloads
+    batch_request["operations"] = payloads
 
     LOGGER.info(f"Successfully converted {len(payloads)} rows")
     
